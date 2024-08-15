@@ -1,0 +1,73 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Booking {
+  createdAt  DateTime           @default(now())
+  customer   Customer?          @relation(fields: [customerId], references: [id])
+  customerId String?
+  dateTime   DateTime?
+  horse      Horse?             @relation(fields: [horseId], references: [id])
+  horseId    String?
+  id         String             @id @default(cuid())
+  status     EnumBookingStatus?
+  updatedAt  DateTime           @updatedAt
+}
+
+model PhotoAlbum {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  photos      Json?
+  title       String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Customer {
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  email     String?
+  id        String    @id @default(cuid())
+  name      String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Horse {
+  age       Int?
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  name      String?
+  typeField String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Admin {
+  createdAt    DateTime @default(now())
+  email        String?
+  id           String   @id @default(cuid())
+  isSuperAdmin Boolean?
+  name         String?
+  updatedAt    DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumBookingStatus {
+  Option1
+}
